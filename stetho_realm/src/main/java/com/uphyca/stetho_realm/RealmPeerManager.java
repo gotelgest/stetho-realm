@@ -71,8 +71,7 @@ public class RealmPeerManager extends ChromePeerManager {
         final OsSharedRealm sharedRealm = openSharedRealm(databaseId);
         //noinspection TryWithIdenticalCatches,TryFinallyCanBeTryWithResources
         try {
-            for (int i = 0; i < sharedRealm.size(); i++) {
-                final String tableName = sharedRealm.getTableName(i);
+            for (String tableName : sharedRealm.getTablesNames()) {
                 if (withMetaTables || tableName.startsWith(TABLE_PREFIX)) {
                     tableNames.add(tableName);
                 }
@@ -142,12 +141,12 @@ public class RealmPeerManager extends ChromePeerManager {
         }
 
         try {
-            return OsSharedRealm.getInstance(builder.build());
+            return OsSharedRealm.getInstance(builder.build(), OsSharedRealm.VersionID.LIVE);
         } catch (RealmError e) {
             if (durability == null) {
                 // Durability 未指定でRealmErrorが出た時は、MEM_ONLY も試してみる
                 builder.inMemory();
-                return OsSharedRealm.getInstance(builder.build());
+                return OsSharedRealm.getInstance(builder.build(), OsSharedRealm.VersionID.LIVE);
             }
             throw e;
         }

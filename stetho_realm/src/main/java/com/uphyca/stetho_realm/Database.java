@@ -201,7 +201,8 @@ public class Database implements ChromeDevtoolsDomain {
             if (addRowIndex) {
                 flatList.add(rowData.getIndex());
             }
-            for (int column = 0; column < numColumns; column++) {
+            for (String columnName : table.getColumnNames()) {
+                long column = table.getColumnKey(columnName);
                 switch (rowData.getColumnType(column)) {
                     case INTEGER:
                         if (rowData.isNull(column)) {
@@ -381,7 +382,7 @@ public class Database implements ChromeDevtoolsDomain {
 
         final long size = linkList.size();
         for (long pos = 0; pos < size; pos++) {
-            sb.append(linkList.getUncheckedRow(pos).getIndex());
+            sb.append(linkList.getUncheckedRow(pos).getObjectKey());
             sb.append(',');
         }
         if (size != 0) {
@@ -438,7 +439,7 @@ public class Database implements ChromeDevtoolsDomain {
         }
 
         long getIndex() {
-            return row.getIndex();
+            return row.getObjectKey();
         }
 
         StethoRealmFieldType getColumnType(long columnIndex) {
