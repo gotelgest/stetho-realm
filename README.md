@@ -11,17 +11,17 @@ grab via Gradle:
 ```groovy
 repositories {
     maven {
-        url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo'
+        url 'https://github.com/gotelgest/stetho-realm/raw/master/maven-repo'
     }
 }
 
 dependencies {
-    compile 'com.facebook.stetho:stetho:1.5.0'
-    compile 'com.uphyca:stetho_realm:2.1.0'
+    compile 'com.facebook.stetho:stetho:1.6.0'
+    compile 'com.uphyca:stetho_realm:3.1.2'
 }
 ```
 
-Stetho-Realm 2.0 supports Stetho 1.1 or newer and Realm 2.0.0 or newer. If you'd like to use Stetho-Realm with Realm 0.80.0 to Realm 1.2.0, please use the latest version of Realm 0.x.
+Stetho-Realm supports Stetho 1.1 or newer and Realm 2.0.0 or newer.
 
 ### Integration
 In your `Application` class, please initialize Stetho with `RealmInspectorModulesProvider.ProviderBuilder` as follows.
