@@ -208,8 +208,10 @@ public class Database implements ChromeDevtoolsDomain {
         final List<Object> flatList = new ArrayList<>();
         long numColumns = table.getColumnCount();
 
-        RealmResults<RealmModel> data = (RealmResults<RealmModel>) Realm.getDefaultInstance()
-                .where(getRealmModel(table.getClassName())).limit(limit).findAll();
+        Realm realm = Realm.getDefaultInstance();
+        realm.refresh();
+        RealmResults<RealmModel> data = (RealmResults<RealmModel>) realm.where(getRealmModel(table.getClassName()))
+                .limit(limit).findAll();
 
         for (RealmModel dataRow : data) {
             Row row = ((RealmObjectProxy) dataRow).realmGet$proxyState().getRow$realm();
