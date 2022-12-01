@@ -19,7 +19,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 31
         versionCode 1003
-        versionName "3.1.0"
+        versionName "3.1.1"
         consumerProguardFiles 'proguard-rules.pro'
     }
 
@@ -57,7 +57,7 @@ publish {
     userOrg = 'uphyca'
     groupId = 'com.uphyca'
     artifactId = 'stetho_realm'
-    version = '3.1.0'
+    version = '3.1.1'
     description = 'Stetho-Realm is a Realm module for Stetho.'
     website = 'https://github.com/dkramer95/stetho-realm'
     issueTracker = 'https://github.com/dkramer95/stetho-realm/issues'

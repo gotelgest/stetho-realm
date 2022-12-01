@@ -24,13 +24,19 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import io.realm.Realm;
 import io.realm.RealmFieldType;
+import io.realm.RealmModel;
+import io.realm.RealmResults;
 import io.realm.internal.OsList;
+import io.realm.internal.RealmObjectProxy;
 import io.realm.internal.Row;
 import io.realm.internal.Table;
 
@@ -155,9 +161,7 @@ public class Database implements ChromeDevtoolsDomain {
                             if (addRowIndex) {
                                 columnNames.add("<index>");
                             }
-                            for (int i = 0; i < table.getColumnCount(); i++) {
-                                columnNames.add(table.getColumnName(i));
-                            }
+                            columnNames.addAll(Arrays.asList(table.getColumnNames()));
 
                             response.columnNames = columnNames;
                             response.values = flattenRows(table, limit, addRowIndex);
@@ -188,16 +192,28 @@ public class Database implements ChromeDevtoolsDomain {
         }
     }
 
+    private Class<? extends RealmModel> getRealmModel(String name) {
+        Set<Class<? extends RealmModel>> modelsRM = Realm.getDefaultInstance().getConfiguration().getRealmObjectClasses();
+        for (Class<? extends RealmModel> model : modelsRM) {
+            if (model.getSimpleName().equals(name)) {
+                return model;
+            }
+        }
+
+        return null;
+    }
+
     private List<Object> flattenRows(Table table, long limit, boolean addRowIndex) {
         Util.throwIfNot(limit >= 0);
         final List<Object> flatList = new ArrayList<>();
         long numColumns = table.getColumnCount();
 
-        final RowFetcher rowFetcher = RowFetcher.getInstance();
-        final long tableSize = table.size();
-        for (long index = 0; index < limit && index < tableSize; index++) {
-            final long row = ascendingOrder ? index : (tableSize - index - 1);
-            final RowWrapper rowData = RowWrapper.wrap(rowFetcher.getRow(table, row));
+        RealmResults<RealmModel> data = (RealmResults<RealmModel>) Realm.getDefaultInstance()
+                .where(getRealmModel(table.getClassName())).limit(limit).findAll();
+
+        for (RealmModel dataRow : data) {
+            Row row = ((RealmObjectProxy) dataRow).realmGet$proxyState().getRow$realm();
+            final RowWrapper rowData = RowWrapper.wrap(row);
             if (addRowIndex) {
                 flatList.add(rowData.getIndex());
             }
